@@ -9,7 +9,6 @@ i2c.init(freq=1000000, sda=pin20, scl=pin19)
 
 radio.on()
 
-#i2c.write(8, b'\x01\x61\x62\x61\x62\x61\x62\x61\x62\x61\x62\x61\x62\x61\x62')
 # Set the LED color
 i2c.write(8, b'\x03\x55\x00\x55')
 
@@ -27,7 +26,7 @@ def writeToLCDScreen(line, text):
     i2c.write(8, text)
 
 def sendPacket(rfid):
-    radio.send(str(myAddress)+",m,"+rfid)
+    radio.send(str(myAddress)+",i,"+rfid)
 
     # Wait up to 1.5 seconds for response
     startTime = utime.ticks_ms()
@@ -43,15 +42,15 @@ def sendPacket(rfid):
 
             address = incoming.split(",")[0]
             if str(address) == str(myAddress):
-                print(address+" is me!")
+                # print(address+" is me!")
                 data = True
                 break
 
     # first check for status codes
-    if data == True:
-        print(incoming.split(',')[1:])
+    if data is True:
+        return incoming.split(',')[1:]
     else:
-        print("No response")
+        return [408]
 
 while True:
 
@@ -63,15 +62,23 @@ while True:
 
             # Print out the card ID we just read
             print("card id = "+rfidCard)
-            writeToLCDScreen(1, "CARD")
-            writeToLCDScreen(2,rfidCard)
+
+            writeToLCDScreen(1, "ID:"+rfidCard)
 
             # Now make a packet
             response = sendPacket(rfidCard)
+
+            if str(response[0]) == '200':
+                if len(response) > 1:
+                    writeToLCDScreen(2,str(response[1]))
+                print(len(response))
+            else:
+                print(response[0])
+
+
 
     # RFID reader can't be reached, oh no!
     except OSError:
         print("cant reach rfid reader")
 
     utime.sleep_ms(1000)
-
