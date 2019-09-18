@@ -40,11 +40,10 @@ ser = serial.Serial(serialPort,115200)
 # m,id,quantity = modify quantity of id, 
 
 while True:
-    original = ser.readline().decode().strip()
+    original = ser.readline().strip()
     request = original.split(',')
     address = request[0]
-    if len(request)<2:
-        continue
+    
     requestType = request[1]
     
     if requestType == 'i':
@@ -62,10 +61,10 @@ while True:
                 result = "204"
                 print("Couldn't locate item")
             else:
-                result = "200,"+(', '.join(str(x) for x in result))
+                result = ', '.join(str(x) for x in result)
                 print("Found: " + str(result))
 
-        ser.write(str(result).encode())
+        ser.write(str(result))
 
     elif requestType == 'm':
         if len(request) < 3:
@@ -93,10 +92,10 @@ while True:
                 result = "204"
                 print("Can't find item: "+rfid)
 
-        ser.write(result.encode())
+        ser.write(result)
 
     else:
 
-        ser.write("400".encode())
+        ser.write("400")
 #open serial port
 #respond to resquests
