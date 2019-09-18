@@ -1,10 +1,15 @@
-Fuses are the same as the default Uno fuses as we are using a 16Mhz resonator at 3.3v.
+# TechnoBit
+This project aims to allow easy interaction between a BBC Microbit and an RFID card reader. A custom PCB has been created that uses an Atmega 328p to interface between the Microbit and an MFRC522 RFID reader. Communication between the Microbit and the Atmega is over an 3.3 V i2c bus and communication between the RFID reader and the Atmega is via SPI. Details of the PCB (including eagle schematic/board layout) and the firmware / bootloader for the Atmega are in the boards directory.
 
-Fuses L:FF H:DE E:FD
+Also included on the board is a header for a 2 row 16 character LCD display, a footprint for an RGB LED and a breakout of all of the Microbits pins.
 
-avrdude -B 200 -C ../etc/avrdude.conf -c dragon_isp -p m328p -U lfuse:w:0xff:m -U hfuse:w:0xde:m -U efuse:w:0xfd:m
+The design allows the Microbit to still use all of its:
+- Buttons
+- Sensors
+- Radio
+- The LED matrix
+- The serial port.
 
-Then write the bootloader that is in this directory. You should then be able to program via an FTDI adapter as normal from the IDE.
+An example micropython program is provided to communicate with the RGB LED, LCD screen and RFID reader.
 
-Charge pump?
-https://www.edn.com/design/integrated-circuit-design/4368224/Voltage-inverter-employs-PWM
+There is also a more comprehensive "shop" example, see the shopServer directory. In this example a Python program runs as a 'database server' on a PC and connects to a Microbit to allow wireless communication. A TechnoBit can send RFID card ids to this 'database server' wirelessly and either increment/decrement the amount held in the database or receive Price, Stock and Name information. 
