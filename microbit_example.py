@@ -9,10 +9,6 @@ i2c.init(freq=1000000, sda=pin20, scl=pin19)
 
 radio.on()
 
-# Set the LED color
-i2c.write(8, b'\x03\x55\x00\x55')
-
-
 # Store previous RFID card in case we want to do some debounce type stuff
 lastRfidCard = ""
 
@@ -71,9 +67,13 @@ while True:
             if str(response[0]) == '200':
                 if len(response) > 1:
                     writeToLCDScreen(2,str(response[1]))
-                print(len(response))
+                    # Set the LED color
+                    i2c.write(8, b'\x03\x00\x55\x00')
             else:
-                print(response[0])
+                writeToLCDScreen(2, "Error: "+str(response[0]))
+                # Set the LED color
+                i2c.write(8, b'\x03\x55\x00\x00')
+
 
 
 
